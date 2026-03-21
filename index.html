@@ -3,240 +3,570 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>rineris mutu - Official</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&display=swap" rel="stylesheet">
-
+<title>PinkJulieLand 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Mitr:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-/* ปรับโทนสีตามบรีฟ: ฟ้าเทอควอยซ์-ชมพู */
---bg:#E0F7FA; /* ฟ้าเทอควอยซ์อ่อนมาก */
---main:#F6A5C9; /* ชมพูหลัก */
---dark:#00ACC1; /* ฟ้าเทอควอยซ์เข้ม */
---white:#FFFFFF;
---glow:rgba(0,172,193,0.3);
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --pk: #ff80b5; --pk2: #ffb6d9; --pk3: #e8407a;
+  --bg: #0a0510; --bg2: #12091d; --bg3: #1a0d2a;
+  --txt2: rgba(255,255,255,0.7); --txt3: rgba(255,255,255,0.42);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Kanit', sans-serif;
+  background: var(--bg); color: #fff;
+  overflow-x: hidden;
+  padding-bottom: 80px; /* เผื่อพื้นที่ให้แถบตะกร้าด้านล่าง */
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Mitr',sans-serif;}
-
-body{
-background:var(--bg);
-display:flex;
-justify-content:center;
+/* Particles */
+#pts { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.pt { position: absolute; animation: ptUp linear infinite; opacity: 0; }
+@keyframes ptUp {
+  0%   { transform: translateY(105vh); opacity: 0; }
+  8%   { opacity: 0.45; }
+  92%  { opacity: 0.45; }
+  100% { transform: translateY(-8vh) rotate(360deg); opacity: 0; }
 }
 
-.container{
-max-width:500px;
-width:100%;
-padding:20px 15px 40px;
+/* Topbar */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: #0f071a; border-bottom: 2px solid var(--pk3);
+  box-shadow: 0 2px 20px rgba(232,64,122,0.3);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 56px;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.ham {
+  width: 38px; height: 38px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5px; cursor: pointer; padding: 5px; border-radius: 8px;
+  border: 1.5px solid var(--pk); background: rgba(255,128,181,0.12);
+  transition: background .2s, box-shadow .2s; flex-shrink: 0;
+}
+.ham:hover { background: rgba(255,128,181,0.24); box-shadow: 0 0 12px rgba(255,128,181,0.4); }
+.ham span {
+  display: block; width: 18px; height: 2.5px;
+  background: #fff; border-radius: 2px;
+  transition: transform .3s, opacity .3s, width .3s; transform-origin: center;
+}
+.ham.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.ham.open span:nth-child(2) { opacity: 0; width: 0; }
+.ham.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+.topbar-brand {
+  font-family: 'Mitr', sans-serif; font-size: 20px; font-weight: 700;
+  color: #ffffff; text-shadow: 0 0 16px rgba(255,128,181,0.7); letter-spacing: 0.5px;
+}
+.topbar-brand span { color: var(--pk); }
+.topbar-right { display: flex; gap: 8px; }
+.tb-link {
+  padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  text-decoration: none; color: #fff;
+  border: 1px solid rgba(255,128,181,0.35); background: rgba(255,128,181,0.1);
+  transition: all .2s;
+}
+.tb-link:hover { background: rgba(255,128,181,0.22); border-color: var(--pk); box-shadow: 0 0 10px rgba(255,128,181,0.3); }
+
+/* Drawer & Overlay */
+.overlay, .modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0); pointer-events: none; transition: background .3s;
+}
+.overlay.open, .modal-overlay.open { background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); pointer-events: all; }
+
+.drawer {
+  position: fixed; top: 0; left: 0; z-index: 201; width: 220px; height: 100vh;
+  background: linear-gradient(180deg, #0f071a, #1a0d2e, #0f071a);
+  border-right: 2px solid rgba(255,128,181,0.38); box-shadow: 6px 0 30px rgba(0,0,0,0.5);
+  display: flex; flex-direction: column; align-items: center; padding: 28px 0 20px;
+  transform: translateX(-100%); transition: transform .32s cubic-bezier(.4,0,.2,1);
+}
+.drawer.open { transform: translateX(0); }
+.dr-av {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--pk), var(--pk3)); border: 3px solid var(--pk);
+  display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 7px;
+  box-shadow: 0 0 22px rgba(255,128,181,0.5); animation: glow 3s ease-in-out infinite;
+}
+@keyframes glow {
+  0%,100% { box-shadow: 0 0 22px rgba(255,128,181,0.5); }
+  50%     { box-shadow: 0 0 40px rgba(255,128,181,0.85); }
+}
+.dr-name { font-size: 10px; font-weight: 700; color: var(--pk); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+.dr-nav { width: 100%; }
+.dr-a {
+  display: flex; align-items: center; gap: 11px; padding: 12px 22px;
+  color: rgba(201,160,208,0.85); font-size: 14px; font-weight: 500;
+  text-decoration: none; position: relative; transition: color .2s, background .2s; cursor: pointer;
+}
+.dr-a:hover { color: #fff; background: rgba(255,128,181,0.1); }
+.dr-a.on { color: #fff; background: linear-gradient(90deg, rgba(255,128,181,0.18), transparent); }
+.dr-a.on::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--pk); border-radius: 0 2px 2px 0;
+}
+.dr-a .ico { font-size: 15px; width: 18px; text-align: center; }
+
+/* Hero */
+.page { position: relative; z-index: 1; min-height: 100vh; }
+.hero {
+  background: linear-gradient(135deg, #1e0838 0%, #3a0e60 35%, #8e2a60 70%, #d95090 100%);
+  padding: 36px 32px 28px; position: relative; min-height: 200px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.hero-txt { position: relative; z-index: 2; }
+.hero-tag {
+  display: inline-block; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1); padding: 3px 13px; border-radius: 20px;
+  font-size: 11px; color: #fff; margin-bottom: 8px;
+}
+.hero-title {
+  font-family: 'Mitr', sans-serif; font-size: 52px; font-weight: 700; line-height: 1.1;
+  background: linear-gradient(135deg, #fff 0%, #ffb6d9 50%, #ff80b5 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(255,128,181,0.6)) drop-shadow(2px 3px 6px rgba(0,0,0,0.4));
+}
+.hero-sub { font-size: 12px; color: rgba(255,255,255,0.75); letter-spacing: 3px; margin-top: 5px; }
+.hero-wave { width: 100%; height: 32px; overflow: hidden; background: var(--bg); position: relative; }
+.hero-wave::before {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; top: 0;
+  background: linear-gradient(135deg, #1e0838, #8e2a60, #d95090);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
 }
 
-.section{
-background:var(--white);
-border-radius:20px;
-padding:25px 20px;
-margin-bottom:20px;
-box-shadow:0 8px 20px rgba(0,0,0,0.05);
-border:2px solid var(--main);
+/* Content */
+.content { max-width: 860px; margin: 0 auto; padding: 24px 28px 50px; }
+[id] { scroll-margin-top: 66px; }
+.sh {
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(90deg, #1e0838 0%, #140628 60%, #0a0510 100%);
+  border-left: 4px solid var(--pk); border-radius: 0 12px 12px 0;
+  padding: 11px 18px; margin-bottom: 16px;
+}
+.sh .ico { font-size: 18px; }
+.sh h2 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
+.sh span { font-size: 12px; color: var(--pk); font-weight: 500; }
+
+/* Interactive Cards (Products) */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.card {
+  position: relative; cursor: pointer;
+  background: linear-gradient(135deg, #150a24, #0f071a);
+  border: 1.5px solid rgba(255,128,181,0.15); border-radius: 14px; padding: 18px 16px;
+  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.card:hover { transform: translateY(-3px); border-color: rgba(255,128,181,0.5); box-shadow: 0 8px 20px rgba(255,128,181,0.15); }
+.card.selected {
+  background: linear-gradient(135deg, rgba(255,128,181,0.15), rgba(232,64,122,0.1));
+  border-color: var(--pk); box-shadow: 0 8px 25px rgba(255,128,181,0.3);
+  transform: translateY(-5px);
+}
+.card-chk {
+  position: absolute; top: 12px; right: 12px; width: 22px; height: 22px;
+  border-radius: 50%; border: 2px solid rgba(255,128,181,0.3);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.card.selected .card-chk { background: var(--pk); border-color: var(--pk); }
+.card-chk::after {
+  content: '✓'; color: #fff; font-size: 12px; font-weight: bold;
+  opacity: 0; transform: scale(0.5); transition: all .2s;
+}
+.card.selected .card-chk::after { opacity: 1; transform: scale(1); }
+.c-ico { font-size: 36px; margin-bottom: 12px; filter: drop-shadow(0 0 6px rgba(255,128,181,0.5)); transition: transform .3s; }
+.card.selected .c-ico { transform: scale(1.1); }
+.c-ttl { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.c-dsc { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.4; margin-bottom: 8px; }
+.c-price-tag {
+  display: inline-block; font-size: 13px; font-weight: 700; color: var(--pk2);
+  background: rgba(255,128,181,0.15); padding: 3px 10px; border-radius: 8px;
 }
 
-h1,h2,h3{color:var(--dark);}
-.center{text-align:center;}
-
-.logo{
-width:150px;height:150px;
-border-radius:50%;
-overflow:hidden;
-margin:0 auto 20px;
-box-shadow:0 6px 20px var(--glow);
+/* Box & Steps */
+.box {
+  background: linear-gradient(135deg, #12091d, #0a0510);
+  border: 1.5px solid rgba(255,128,181,0.12); border-radius: 14px; padding: 20px 22px; margin-bottom: 18px;
 }
-
-.logo img{width:100%;height:100%;object-fit:cover;}
-
-.badges{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:10px;
-margin-bottom:20px;
+.steps { display: flex; flex-direction: column; gap: 14px; }
+.step { display: flex; gap: 13px; align-items: flex-start; }
+.sn {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--pk3), var(--pk));
+  display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;
+  box-shadow: 0 2px 10px rgba(232,64,122,0.4);
 }
+.st { font-size: 13px; color: var(--txt2); line-height: 1.65; padding-top: 3px; }
+.st strong { color: var(--pk2); }
 
-.badge{
-background:#fff;
-padding:8px 16px;
-border-radius:25px;
-box-shadow:0 4px 10px var(--glow);
-font-size:13px;
-color:var(--dark);
-border: 1px solid var(--bg);
+/* Sticky Cart Bar */
+.cart-bar {
+  position: fixed; bottom: -100px; left: 0; right: 0; z-index: 150;
+  background: rgba(26, 13, 46, 0.95); backdrop-filter: blur(10px);
+  border-top: 1.5px solid var(--pk); box-shadow: 0 -5px 20px rgba(232,64,122,0.2);
+  padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  transition: bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
-.btn{
-display:block;
-text-align:center;
-padding:14px;
-border-radius:25px;
-text-decoration:none;
-margin-top:15px;
-font-weight:500;
-transition: 0.3s;
+.cart-bar.visible { bottom: 0; }
+.cart-info { display: flex; flex-direction: column; }
+.cart-info span { font-size: 12px; color: var(--txt2); }
+.cart-info strong { font-size: 18px; color: var(--pk2); font-weight: 700; line-height: 1.2; }
+.btn-checkout {
+  background: linear-gradient(135deg, var(--pk3), var(--pk));
+  border: none; border-radius: 25px; color: #fff; font-family: 'Kanit', sans-serif;
+  font-size: 14px; font-weight: 700; padding: 10px 24px; cursor: pointer;
+  box-shadow: 0 4px 15px rgba(232,64,122,0.5); transition: transform 0.2s, box-shadow 0.2s;
 }
+.btn-checkout:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(232,64,122,0.7); }
 
-.btn-outline{
-background:#fff;
-border:2px dashed var(--main);
-color:var(--main);
+/* Modal Checkout */
+.modal {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+  width: 90%; max-width: 400px; z-index: 201;
+  background: linear-gradient(135deg, #1e0838, #140628);
+  border: 2px solid var(--pk); border-radius: 20px; padding: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 30px rgba(255,128,181,0.2);
+  opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
-.btn-main{
-background:var(--main);
-color:#fff;
+.modal.open { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,128,181,0.2); padding-bottom: 12px; }
+.modal-head h3 { font-size: 18px; color: var(--pk2); }
+.close-btn { background: none; border: none; color: var(--txt2); font-size: 24px; cursor: pointer; transition: color 0.2s; }
+.close-btn:hover { color: var(--pk); }
+.order-list { max-height: 200px; overflow-y: auto; margin-bottom: 16px; padding-right: 5px; }
+.order-item { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #fff; }
+.order-item span:last-child { color: var(--pk2); font-weight: 600; }
+.order-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 20px; padding-top: 12px; border-top: 1px dashed rgba(255,128,181,0.3); }
+.order-total span:last-child { color: var(--pk); }
+.btn-line {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; background: #00b900; color: #fff; text-decoration: none;
+  padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 700;
+  border: none; cursor: pointer; transition: background 0.2s, transform 0.2s;
 }
+.btn-line:hover { background: #00a000; transform: translateY(-2px); }
 
-.step{
-display:flex;
-align-items:center;
-gap:12px;
-margin-bottom:12px;
+/* Alert Popup */
+.alert-popup {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+  background: rgba(232, 64, 122, 0.95); color: #fff; padding: 12px 24px;
+  border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 999;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3); opacity: 0; pointer-events: none;
+  transition: all 0.3s ease;
 }
+.alert-popup.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.step-num{
-background:var(--dark);
-color:#fff;
-width:26px;height:26px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:13px;
-}
+/* Other Sections */
+.rules-box { background: linear-gradient(135deg, #1a0812, #250a1d); border: 1.5px solid rgba(232,64,122,0.18); border-radius: 14px; padding: 18px 22px; margin-bottom: 18px; }
+.rule { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid rgba(255,128,181,0.07); font-size: 13px; color: var(--txt2); line-height: 1.65; }
+.rule:last-child { border-bottom: none; }
+.contact-box { background: linear-gradient(135deg, #0f0a20, #0a0510); border: 1.5px solid rgba(255,128,181,0.14); border-radius: 14px; padding: 20px 22px; margin-bottom: 18px; }
+.contact-hd { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+.contact-hd h3 { font-size: 14px; font-weight: 700; color: var(--pk2); }
+.ct-link { display: flex; align-items: center; gap: 13px; padding: 11px 14px; background: rgba(255,128,181,0.05); border: 1px solid rgba(255,128,181,0.1); border-radius: 11px; text-decoration: none; color: #fff; font-size: 13px; margin-bottom: 10px; transition: background .2s, border-color .2s, transform .2s; }
+.ct-link:last-child { margin-bottom: 0; }
+.ct-link:hover { background: rgba(255,128,181,0.1); border-color: rgba(255,128,181,0.3); transform: translateX(4px); }
+.ct-ico { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.ct-inf { flex: 1; }
+.ct-t { font-weight: 700; font-size: 13px; }
+.ct-u { font-size: 11px; color: var(--txt3); margin-top: 1px; word-break: break-all; }
+.ct-arr { color: var(--pk); }
+.footer { background: #0a0510; border-top: 2px solid rgba(255,128,181,0.3); padding: 20px 28px; display: flex; flex-direction: column; align-items: center; gap: 12px; position: relative; z-index: 1; margin-bottom: 50px; }
+.footer-text { font-size: 12px; color: rgba(255,128,181,0.55); text-align: center; }
 
-.price-row{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
-background:#fbfdff;
-padding:10px 15px;
-border-radius:15px;
-border-bottom: 1px solid #e0f0f5;
-}
-
-.price-tag{
-background:var(--main);
-color:#fff;
-padding:3px 12px;
-border-radius:20px;
-font-size:14px;
-}
-
-.footer{
-text-align:center;
-margin-top:30px;
-}
-
-.socials{
-display:flex;
-gap:8px;
-justify-content:center;
-margin-top:15px;
-}
-
-.socials a{
-flex:1;
-max-width:100px;
-text-align:center;
-padding:8px;
-border-radius:25px;
-background:#fff;
-text-decoration:none;
-color:var(--dark);
-font-size:13px;
-border:1px solid #ffeef5;
-}
-
-.small{font-size:12px;opacity:.7;margin-top:10px;}
-.sub-step {font-size: 13px; color: #666; margin-left: 38px; margin-bottom: 5px;}
-.notice-red {color: #e53935; font-weight: 500;}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--pk3); border-radius: 3px; }
 </style>
 </head>
-
 <body>
-<div class="container">
+<div id="pts"></div>
 
-<div class="section center" style="border:none;box-shadow:none;background:transparent;">
-
-<div class="logo">
-<img src="logo.jpg" alt="rineris mutu logo">
+<!-- Topbar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="ham" id="hamBtn" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </div>
+    <span class="topbar-brand">pink<span>julie</span>land</span>
+  </div>
+  <div class="topbar-right">
+    <a class="tb-link" href="https://lin.ee/WgnPEId" target="_blank">💚 LINE</a>
+  </div>
 </div>
 
-<h1>rineris mutu</h1>
-<p style="color:var(--dark);opacity:.8;margin:10px 0 20px;">
-จะมูจะตัดหรือจะแต่ง
-</p>
-
-<div class="badges">
-<div class="badge">🎬 CapCut & ตัดต่อ</div>
-<div class="badge">🔮 ดูดวง</div>
-<div class="badge">🎨 เว็บรับทำป้าย</div>
+<!-- Drawer Menu -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dr-av">🌸</div>
+  <div class="dr-name">PinkJulieLand</div>
+  <nav class="dr-nav">
+    <a class="dr-a on" data-target="top"><span class="ico">🏠</span><span>Home</span></a>
+    <a class="dr-a" data-target="services"><span class="ico">🎬</span><span>แพ็กเกจ</span></a>
+    <a class="dr-a" data-target="steps"><span class="ico">📋</span><span>ขั้นตอน</span></a>
+    <a class="dr-a" data-target="rules"><span class="ico">📍</span><span>กฎร้าน</span></a>
+    <a class="dr-a" data-target="contact"><span class="ico">💬</span><span>ติดต่อ</span></a>
+  </nav>
 </div>
 
-<a href="#" class="btn btn-outline">
-เช็คคิวงาน ✨
-</a>
+<!-- Main Page -->
+<div class="page" id="top">
+  <div class="hero">
+    <div class="hero-txt">
+      <div class="hero-tag">🍿 บริการสตรีมมิ่งดูหนัง-ซีรีส์</div>
+      <div class="hero-title">pinkjulieland</div>
+      <div class="hero-sub">✦ PREMIUM STREAMING APPS ✦</div>
+    </div>
+  </div>
+  <div class="hero-wave"></div>
+
+  <div class="content">
+    
+    <!-- Services Section -->
+    <div id="services">
+      <div class="sh"><span class="ico">🎬</span><h2>แพ็กเกจแอปดูหนัง</h2><span>— จิ้มบล็อกเพื่อเลือกสั่งซื้อได้เลยค่ะ~</span></div>
+      
+      <!-- สินค้าที่เลือกได้ -->
+      <div class="cards" id="product-container">
+        
+        <div class="card" onclick="toggleProduct(this)" data-name="Netflix 1 วัน" data-price="10">
+          <div class="card-chk"></div>
+          <div class="c-ico">🍿</div>
+          <div class="c-ttl">Netflix 1 วัน</div>
+          <div class="c-dsc">ดูได้ 24 ชม. แบบจุใจ<br>ราคาประหยัด</div>
+          <div class="c-price-tag">฿10</div>
+        </div>
+
+        <div class="card" onclick="toggleProduct(this)" data-name="Netflix 30 วัน" data-price="120">
+          <div class="card-chk"></div>
+          <div class="c-ico">🎬</div>
+          <div class="c-ttl">Netflix 30 วัน</div>
+          <div class="c-dsc">ดูยาวๆ ตลอดทั้งเดือน<br>ไม่สะดุดชัวร์</div>
+          <div class="c-price-tag">฿120</div>
+        </div>
+
+        <div class="card" onclick="toggleProduct(this)" data-name="iQIYI หาร 3 (30 วัน)" data-price="49">
+          <div class="card-chk"></div>
+          <div class="c-ico">📺</div>
+          <div class="c-ttl">iQIYI หาร 3</div>
+          <div class="c-dsc">VIP 30 วัน (จอหาร 3)<br>ซีรีส์จีนเกาหลีจัดเต็ม</div>
+          <div class="c-price-tag">฿49</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Steps Section -->
+    <div id="steps" style="margin-bottom:18px;">
+      <div class="sh"><span class="ico">📋</span><h2>ขั้นตอนการสั่งซื้อ</h2><span>— ง่ายมากค่า</span></div>
+      <div class="box" style="margin-bottom:0;">
+        <div class="steps">
+          <div class="step"><div class="sn">1</div><div class="st"><strong>จิ้มเลือกแพ็กเกจ</strong> ที่ต้องการด้านบน แล้วกดสั่งทำ/สั่งซื้อด้านล่าง</div></div>
+          <div class="step"><div class="sn">2</div><div class="st"><strong>กดปุ่มสีเขียว</strong> ระบบจะคัดลอกข้อความและพาไปหน้าแชท LINE <strong>ให้กดวาง (Paste) ส่งให้แอดมิน</strong></div></div>
+          <div class="step"><div class="sn">3</div><div class="st"><strong>โอนเงินชำระยอด</strong> ตามที่แอดมินแจ้ง</div></div>
+          <div class="step"><div class="sn">4</div><div class="st"><strong>รับแอคเคาท์ไปดูได้เลย</strong> ฟินๆ ยาวๆ ✨</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rules Section -->
+    <div id="rules">
+      <div class="sh"><span class="ico">📍</span><h2>กฎของร้าน</h2><span>— โปรดอ่านก่อนสั่งนะคะ</span></div>
+      <div class="rules-box">
+        <div class="rule"><span>⚠️</span><span>ซื้อแล้วไม่รับเปลี่ยนหรือคืนเงินทุกกรณี ยกเว้นบัญชีมีปัญหาจากทางร้าน</span></div>
+        <div class="rule"><span>🚫</span><span>ห้ามเปลี่ยนรหัสผ่าน หรือแก้ไขโปรไฟล์ของคนอื่นเด็ดขาด</span></div>
+        <div class="rule"><span>📺</span><span>สำหรับจอหาร รบกวนดูแค่ 1 เครื่อง/จอ ตามที่ตกลงเท่านั้นนะคะ</span></div>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div id="contact">
+      <div class="contact-box">
+        <div class="contact-hd"><span style="font-size:17px;">📱</span><h3>ช่องทางติดต่อด่วน</h3></div>
+        <a class="ct-link" href="https://lin.ee/WgnPEId" target="_blank">
+          <div class="ct-ico" style="background:linear-gradient(135deg,#00b900,#009000);">💚</div>
+          <div class="ct-inf"><div class="ct-t">LINE Official</div><div class="ct-u">lin.ee/WgnPEId</div></div>
+          <span class="ct-arr">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">✦ PINKJULIELAND STORE ✦ บริการสตรีมมิ่งพรีเมียม 🌸</div>
+  </div>
 </div>
 
-<div class="section">
-<h2>📋 ขั้นตอน & กฎของร้าน</h2>
-
-<div class="step"><div class="step-num">1</div><div>สอบถามก่อนโอนทุกครั้ง แจ้งรายละเอียด/ส่งบรีฟ</div></div>
-<div class="step"><div class="step-num">2</div><div>ชำระเงินเรียบร้อย รอลงคิวและอัปเดทงาน</div></div>
-
-<h3 style="margin: 20px 0 10px;">🕒 เงื่อนไขเวลา</h3>
-<div class="step"><div class="step-num">ปกติ</div><div>รองาน 24ชม. (หากคิวว่างเริ่มทันที)</div></div>
-<div class="step"><div class="step-num">ตัด</div><div>คิวปกติ 1-7 วัน (งานตัดคลิป)</div></div>
-<div class="step"><div class="step-num">ลัด</div><div>คิวลัด +30 -150 (ได้รับงานใน 1-3 วัน)</div></div>
-
-<h3 style="margin: 20px 0 10px; color: #e53935;">📍 กฎของร้าน</h3>
-<p class="sub-step notice-red">• โอนเงินแล้วไม่คืนเงินทุกกรณี</p>
-<p class="sub-step notice-red">• ยกเลิกหลังส่งบรีฟ (หากเริ่มงานแล้ว) คืนแค่ 50%</p>
-<p class="sub-step notice-red">• ยกเลิกหลังเช็คงาน = ไม่คืน และส่งงานตามปกติ</p>
-
-<a href="https://rineris.xdvz.xyz/" class="btn btn-main">ดูวิธีเข้าใช้งาน CapCut ⭐️</a>
+<!-- Sticky Cart Bar -->
+<div class="cart-bar" id="cartBar">
+  <div class="cart-info">
+    <span>เลือก <span id="cartCount">0</span> รายการ</span>
+    <strong>฿<span id="cartTotal">0</span></strong>
+  </div>
+  <button class="btn-checkout" onclick="openCheckout()">สั่งเลย ✨</button>
 </div>
 
-<div class="section">
-<h2>💰 เรทราคา</h2>
-
-<h3 style="margin-bottom: 10px; color: #7e57c2;">🔮 สายมู เรทเริ่ด</h3>
-<div class="price-row"><span>ตอบคำถาม ใช่ / ไม่</span><span class="price-tag">9฿</span></div>
-<div class="price-row"><span>พิมพ์ตอบ 1 คำถาม</span><span class="price-tag">29฿</span></div>
-<div class="price-row"><span>พิมพ์ตอบ 3 คำถาม</span><span class="price-tag">79฿</span></div>
-<div class="price-row"><span>เซ็ทที่พึ่งทางใจ (การเรียน/รัก/ปัง/สีมงคล)</span><span class="price-tag">59฿</span></div>
-
-<h3 style="margin: 20px 0 10px; color: #0086a7;">🎬 CapCut & ตัดต่อ</h3>
-<div class="price-row"><span>CapCut 1 วัน</span><span class="price-tag">25฿</span></div>
-<div class="price-row"><span>CapCut 7 วัน</span><span class="price-tag">59฿</span></div>
-<div class="price-row"><span>CapCut 30 วัน</span><span class="price-tag">99฿</span></div>
-<div class="price-row"><span>CapCut 1 ปี</span><span class="price-tag">1499฿</span></div>
-<div class="price-row"><span>ราคารับตัดต่อ</span><span class="price-tag">เริ่มต้น 99฿</span></div>
-
-<a href="https://lin.ee/rVnmOtV" class="btn btn-main">ติดต่อสอบถามคลิก 🎀</a>
+<!-- Checkout Modal -->
+<div class="modal-overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
+<div class="modal" id="checkoutModal">
+  <div class="modal-head">
+    <h3>🛒 สรุปรายการสั่งซื้อ</h3>
+    <button class="close-btn" onclick="closeCheckout()">×</button>
+  </div>
+  <div class="order-list" id="orderList">
+    <!-- Items inject here -->
+  </div>
+  <div class="order-total">
+    <span>ยอดที่ต้องชำระ</span>
+    <span>฿<span id="modalTotal">0</span></span>
+  </div>
+  <button class="btn-line" onclick="sendToLine()">
+    <span>💬</span> คัดลอก & สั่งผ่าน LINE
+  </button>
 </div>
 
-<div class="footer">
-<a href="https://rineris.xdvz.xyz/" class="btn btn-main">เข้าสู่ Website Shop 🛒</a>
-
-<div class="socials">
-<a href="https://line.me/ti/p/LfBtdhlrVa">LINE (หลัก)</a>
-<a href="https://lin.ee/rVnmOtV">LINE (ดูดวง)</a>
-<a href="https://rineris.xdvz.xyz/">Shop</a>
+<!-- Alert Popup -->
+<div class="alert-popup" id="alertPopup">
+  ✨ คัดลอกข้อความแล้ว! กรุณากด "วาง" ในแชทไลน์ได้เลยค่า
 </div>
 
-<p class="small">
-© 2026 rineris mutu
-</p>
-</div>
+<script>
+  // --- Drawer Menu Logic ---
+  function toggleDrawer() {
+    const isOpen = document.getElementById('drawer').classList.contains('open');
+    isOpen ? closeDrawer() : openDrawer();
+  }
+  function openDrawer() {
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('hamBtn').classList.add('open');
+  }
+  function closeDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('hamBtn').classList.remove('open');
+  }
+  
+  // Smooth scroll
+  document.querySelectorAll('.dr-a[data-target]').forEach(a => {
+    a.addEventListener('click', () => {
+      const id = a.dataset.target;
+      const el = document.getElementById(id);
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 66;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+      document.querySelectorAll('.dr-a').forEach(n => n.classList.remove('on'));
+      a.classList.add('on');
+      setTimeout(closeDrawer, 120);
+    });
+  });
 
-</div>
+  // --- Particle Background ---
+  const P = document.getElementById('pts');
+  ['✦','★','♥','✿','◆','✧','♡','☆','◇','❋'].forEach(e => {
+    for (let j = 0; j < 2; j++) {
+      const d = document.createElement('div');
+      d.className = 'pt';
+      d.textContent = e;
+      d.style.cssText = `left:${Math.random()*100}vw;font-size:${8+Math.random()*8}px;color:${'#ff80b5,#ffb6d9,#e8407a,#c9a0d0'.split(',')[Math.floor(Math.random()*4)]};animation-duration:${10+Math.random()*13}s;animation-delay:${-Math.random()*25}s;`;
+      P.appendChild(d);
+    }
+  });
+
+  // --- Shopping Cart Logic ---
+  let selectedItems = [];
+
+  function toggleProduct(element) {
+    element.classList.toggle('selected');
+    updateCart();
+  }
+
+  function updateCart() {
+    const cards = document.querySelectorAll('.card.selected');
+    selectedItems = [];
+    let total = 0;
+
+    cards.forEach(card => {
+      const name = card.getAttribute('data-name');
+      const price = parseInt(card.getAttribute('data-price'));
+      selectedItems.push({ name, price });
+      total += price;
+    });
+
+    // Update Bottom Bar UI
+    const cartBar = document.getElementById('cartBar');
+    document.getElementById('cartCount').innerText = selectedItems.length;
+    document.getElementById('cartTotal').innerText = total;
+
+    if (selectedItems.length > 0) {
+      cartBar.classList.add('visible');
+    } else {
+      cartBar.classList.remove('visible');
+    }
+  }
+
+  // --- Checkout Modal Logic ---
+  function openCheckout() {
+    const orderList = document.getElementById('orderList');
+    orderList.innerHTML = '';
+    let total = 0;
+
+    selectedItems.forEach(item => {
+      total += item.price;
+      const div = document.createElement('div');
+      div.className = 'order-item';
+      div.innerHTML = `<span>• ${item.name}</span><span>฿${item.price}</span>`;
+      orderList.appendChild(div);
+    });
+
+    document.getElementById('modalTotal').innerText = total;
+
+    document.getElementById('checkoutOverlay').classList.add('open');
+    document.getElementById('checkoutModal').classList.add('open');
+  }
+
+  function closeCheckout() {
+    document.getElementById('checkoutOverlay').classList.remove('open');
+    document.getElementById('checkoutModal').classList.remove('open');
+  }
+
+  // --- Send to LINE Logic ---
+  function sendToLine() {
+    // 1. สร้างข้อความสรุปออเดอร์
+    let orderText = `🌸 สั่งแอปสตรีมมิ่งจาก PinkJulieLand 🌸\n\n📝 รายการที่เลือก:\n`;
+    let total = 0;
+    
+    selectedItems.forEach(item => {
+      orderText += `- ${item.name} [${item.price} บาท]\n`;
+      total += item.price;
+    });
+    
+    orderText += `\n💰 ยอดรวม: ${total} บาท\n\nขอเลขบัญชีโอนเงินหน่อยค่า ✨`;
+
+    // 2. คัดลอกข้อความลง Clipboard
+    const tempInput = document.createElement("textarea");
+    tempInput.value = orderText;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+
+    // 3. ปิด Modal และแสดง Alert
+    closeCheckout();
+    const alertBox = document.getElementById('alertPopup');
+    alertBox.classList.add('show');
+    
+    // 4. หลังจากแจ้งเตือน 1.5 วินาที ให้เด้งไปที่ลิงก์ LINE ทันที
+    setTimeout(() => {
+      alertBox.classList.remove('show');
+      window.open('https://lin.ee/WgnPEId', '_blank'); // ลิงก์ไลน์ใหม่ที่ให้มา
+    }, 1500);
+  }
+</script>
 </body>
 </html>
+
+
